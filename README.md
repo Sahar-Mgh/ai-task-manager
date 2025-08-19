@@ -1,40 +1,93 @@
-# Simple Flask Task Manager
+# AI-Powered Flask Task Manager
 
-A lightweight web application for managing a to-do list, built with Python and the Flask framework. This project demonstrates full CRUD (Create, Read, Update, Delete) functionality for managing tasks.
+This project is a fully functional web-based task management application built with Python and Flask. It was developed to demonstrate a modern, AI-assisted software development workflow, from requirements gathering and code generation to testing, documentation, and containerization.
+
+The application not only manages a to-do list with full CRUD (Create, Read, Update, Delete) functionality but also integrates a Natural Language Processing (NLP) model to intelligently parse task descriptions.
 
 ---
 
 ## Features
 
-- **Add a Task:** Quickly add new items to your list.
-- **View All Tasks:** See a clean, organized list of all your current tasks.
-- **Mark a Task as Done:** Visually mark tasks as complete to track your progress.
-- **Delete a Task:** Permanently remove tasks that are no longer needed.
+-   **View, Add, and Delete Tasks:** Standard, robust functionality to manage your to-do list.
+-   **Mark Tasks as Complete:** Visually track your progress by marking tasks as done.
+-   **Database Persistence:** All tasks are saved in a persistent SQLite database.
+-   **Smart Task Parsing:** Automatically detects dates and times in task descriptions using a `spaCy` NLP model (e.g., "Finish report by Friday" will be saved with a note).
+-   **Containerized:** The entire application is containerized with **Docker** for easy deployment and portability.
 
 ---
 
-## Installation and Usage
+## Tech Stack
 
-1.  **Prerequisites:** Make sure you have Python 3 and pip installed.
+-   **Backend:** Python, Flask, Flask-SQLAlchemy
+-   **Database:** SQLite
+-   **NLP:** spaCy
+-   **Testing:** pytest
+-   **Containerization:** Docker
 
-2.  **Clone the repository:**
+---
+
+## Getting Started
+
+You can run this project in two ways: locally with Python or using Docker.
+
+### Option 1: Local Setup
+
+1.  **Prerequisites:** Make sure you have Python 3 and `pip` installed.
+
+2.  **Clone the Repository:**
     ```sh
     git clone <your-repo-url>
     cd <your-repo-folder>
     ```
 
-3.  **Install Python dependencies:**
+3.  **Create and Activate a Virtual Environment:**
+    ```sh
+    python -m venv venv
+    # On macOS/Linux:
+    source venv/bin/activate
+    # On Windows:
+    venv\Scripts\activate
+    ```
+
+4.  **Install Python Dependencies:**
     ```sh
     pip install -r requirements.txt
     ```
 
-4.  **Download the NLP Model:** (This is the new step)
+5.  **Download the NLP Model:**
     ```sh
     python -m spacy download en_core_web_sm
     ```
 
-5.  **Run the app:**
+6.  **Run the Application:**
     ```sh
-    python app.py
+    flask run
     ```
     The application will be available at `http://127.0.0.1:5000`.
+
+---
+
+### Option 2: Running with Docker
+
+1.  **Prerequisites:** Make sure you have Docker installed and running on your machine.
+
+2.  **Build the Docker Image:**
+    From the root directory of the project, run:
+    ```sh
+    docker build -t task-manager .
+    ```
+
+3.  **Run the Docker Container:**
+    ```sh
+    docker run -p 5000:5000 task-manager
+    ```
+    The application will be available at `http://127.0.0.1:5000`.
+
+---
+
+## Running the Tests
+
+This project includes a full suite of automated tests. To run them, make sure you have completed the local setup steps and then run the following command in your terminal:
+
+```sh
+pytest
