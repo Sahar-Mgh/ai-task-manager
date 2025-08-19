@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+</head>
+<body>
+    <h1>My Tasks</h1>
+    
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {% if task.done %}
+                    <span style="text-decoration: line-through;">{{ task.text }}</span>
+                {% else %}
+                    <span>{{ task.text }}</span>
+                    <a href="{{ url_for('mark_as_done', task_id=loop.index0) }}">Mark as Done</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <form method="POST" action="/">
+        <input type="text" name="task" placeholder="Enter a new task">
+        <button type="submit">Add Task</button>
+    </form>
+</body>
+</html>
