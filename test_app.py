@@ -37,3 +37,15 @@ def test_mark_task_as_done(client):
     assert response.status_code == 200
     # Check if the task text is now wrapped in a strikethrough style
     assert b'<span style="text-decoration: line-through;">' in response.data
+
+def test_delete_task(client):
+    """Test that a task can be deleted."""
+    # Add a task to ensure the list has something to delete
+    client.post('/', data={'task': 'Task to be deleted'}, follow_redirects=True)
+    
+    # Simulate clicking the 'Delete' link for the first task (ID 0)
+    response = client.get('/delete/0', follow_redirects=True)
+    
+    assert response.status_code == 200
+    # Check that the task's text is now GONE from the page
+    assert b"Task to be deleted" not in response.data

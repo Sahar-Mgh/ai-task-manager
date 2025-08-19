@@ -27,5 +27,13 @@ def mark_as_done(task_id):
         tasks[task_id]['done'] = True
     return redirect(url_for('index'))
 
+
+    # NEW: Route to handle deleting a task
+@app.route('/delete/<int:task_id>')
+def delete_task(task_id):
+    if 0 <= task_id < len(tasks):
+        tasks.pop(task_id) # The .pop() method removes an item from a list
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)

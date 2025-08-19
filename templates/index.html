@@ -10,13 +10,14 @@
     <ul>
         {% for task in tasks %}
             <li>
-                {% if task.done %}
-                    <span style="text-decoration: line-through;">{{ task.text }}</span>
-                {% else %}
-                    <span>{{ task.text }}</span>
-                    <a href="{{ url_for('mark_as_done', task_id=loop.index0) }}">Mark as Done</a>
-                {% endif %}
-            </li>
+    {% if task.done %}
+        <span style="text-decoration: line-through;">{{ task.text }}</span>
+    {% else %}
+        <span>{{ task.text }}</span>
+        <a href="{{ url_for('mark_as_done', task_id=loop.index0) }}">Mark as Done</a>
+    {% endif %}
+    <a href="{{ url_for('delete_task', task_id=loop.index0) }}">Delete</a>
+</li>
         {% endfor %}
     </ul>
     
