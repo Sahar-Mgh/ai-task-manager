@@ -1,15 +1,15 @@
 # Simple Flask Task Manager
 
-This is a lightweight web application for managing a to-do list, built with Python and the Flask framework. It allows users to create, view, and delete tasks.
+A lightweight web application for managing a to-do list, built with Python and the Flask framework. This project demonstrates full CRUD (Create, Read, Update, Delete) functionality for managing tasks.
 
 ---
 
 ## Features
 
-* **View Tasks:** All current tasks are displayed in a simple list.
-* **Add Tasks:** A form allows for easy submission of new tasks.
-* **Delete Tasks:** Remove tasks that are no longer needed.
-* **Mark Tasks Complete:** Check off tasks to track your progress.
+- **Add a Task:** Quickly add new items to your list.
+- **View All Tasks:** See a clean, organized list of all your current tasks.
+- **Mark a Task as Done:** Visually mark tasks as complete to track your progress.
+- **Delete a Task:** Permanently remove tasks that are no longer needed.
 
 ---
 

@@ -1,51 +1,61 @@
 import pytest
-from app import app # Imports the app we created
+from app import app, db, Task
 
 @pytest.fixture
 def client():
-    # Create a test client for our app
+    # --- SETUP FOR TESTING ---
+    # Configure the app for testing
+    app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:' # Use an in-memory DB
+    
+    # Create a test client
     with app.test_client() as client:
-        yield client
+        # Establish an application context
+        with app.app_context():
+            # Create the database tables
+            db.create_all()
+        
+        yield client # This is where the test runs
+        
+        # --- TEARDOWN ---
+        with app.app_context():
+            # Drop all tables after the test is done
+            db.drop_all()
 
 def test_index_page_loads(client):
     """Test that the home page loads correctly."""
     response = client.get('/')
     assert response.status_code == 200
-    # Check if the title "My Tasks" is on the page
     assert b"My Tasks" in response.data
 
 def test_add_task(client):
-    """Test that a new task can be added."""
-    # Send a POST request, simulating a user submitting the form
-    response = client.post('/', data={'task': 'A New Test Task'}, follow_redirects=True)
-    
-    # Check that the page is still okay
+    """Test that a new task can be added via POST and appears on the page."""
+    response = client.post('/', data={'task': 'A New DB Task'}, follow_redirects=True)
     assert response.status_code == 200
-    # Crucially, check if our new task now appears in the page's content
-    assert b"A New Test Task" in response.data
-
-    # ... (previous test code) ...
+    assert b"A New DB Task" in response.data
 
 def test_mark_task_as_done(client):
     """Test that a task can be marked as done."""
-    # First, add a task to ensure the list isn't empty
-    client.post('/', data={'task': 'Task to be marked done'}, follow_redirects=True)
+    # First, create a task in the test database
+    with app.app_context():
+        new_task = Task(text='Task to be marked done')
+        db.session.add(new_task)
+        db.session.commit()
+        task_id = new_task.id
     
-    # Now, simulate clicking the 'Mark as Done' link for the first task (ID 0)
-    response = client.get('/done/0', follow_redirects=True)
-    
+    # Now, simulate clicking the 'Mark as Done' link
+    response = client.get(f'/done/{task_id}', follow_redirects=True)
     assert response.status_code == 200
-    # Check if the task text is now wrapped in a strikethrough style
     assert b'<span style="text-decoration: line-through;">' in response.data
 
 def test_delete_task(client):
     """Test that a task can be deleted."""
-    # Add a task to ensure the list has something to delete
-    client.post('/', data={'task': 'Task to be deleted'}, follow_redirects=True)
-    
-    # Simulate clicking the 'Delete' link for the first task (ID 0)
-    response = client.get('/delete/0', follow_redirects=True)
-    
+    with app.app_context():
+        new_task = Task(text='Task to be deleted')
+        db.session.add(new_task)
+        db.session.commit()
+        task_id = new_task.id
+
+    response = client.get(f'/delete/{task_id}', follow_redirects=True)
     assert response.status_code == 200
-    # Check that the task's text is now GONE from the page
     assert b"Task to be deleted" not in response.data
