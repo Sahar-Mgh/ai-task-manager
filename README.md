@@ -23,12 +23,17 @@ A lightweight web application for managing a to-do list, built with Python and t
     cd <your-repo-folder>
     ```
 
-3.  **Install dependencies:**
+3.  **Install Python dependencies:**
     ```sh
     pip install -r requirements.txt
     ```
 
-4.  **Run the app:**
+4.  **Download the NLP Model:** (This is the new step)
+    ```sh
+    python -m spacy download en_core_web_sm
+    ```
+
+5.  **Run the app:**
     ```sh
     python app.py
     ```

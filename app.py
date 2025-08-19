@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+
 
 app = Flask(__name__)
 
@@ -23,6 +27,35 @@ with app.app_context():
     db.create_all()
 
 # --- ROUTES ---
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        new_task_text = request.form.get('task')
+        if new_task_text:
+            
+            # --- NEW NLP LOGIC ---
+            # Process the text with spaCy
+            doc = nlp(new_task_text)
+            detected_time = ""
+            # Find any date or time entities
+            for ent in doc.ents:
+                if ent.label_ in ["DATE", "TIME"]:
+                    detected_time = ent.text
+                    break # Use the first one found
+            
+            if detected_time:
+                # Append the detected time to the original text
+                new_task_text += f" (Detected: {detected_time})"
+            # --- END NLP LOGIC ---
+
+            new_task = Task(text=new_task_text, done=False)
+            db.session.add(new_task)
+            db.session.commit()
+        return redirect(url_for('index'))
+    
+    all_tasks = Task.query.all()
+    return render_template('index.html', tasks=all_tasks)
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
